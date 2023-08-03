@@ -67,33 +67,26 @@ var init = async function () {
                   }
         
                   if (result.length > 0) {
-                    let tokenAddress = "";
-                    if (result[1].length > 0) {
-                      tokenAddress = result[1][1];
-                      console.log("tokenAddress", tokenAddress);
-
-                      // Check if the token address is in the whitelist
-                      if (constants.whitelist.includes(tokenAddress)) {
-                        console.log(`Token Address: ${tokenAddress} is in the whitelist, so we will proceed with this transaction.`);
-                      } else {
-                        // If it's not in the whitelist, then check if it's in the blacklist
-                        if (constants.blacklist.includes(tokenAddress)) {
-                          console.log(`Token Address: ${tokenAddress} is in the blacklist, so we will ignore this transaction.`);
-                          return;
-                        }
-                      }
-    
-                      // Calculate the gas price for buying and selling
-                      const buyGasPrice = constants.calculate_gas_price("buy", transaction.gasPrice);
-                      const sellGasPrice = constants.calculate_gas_price("sell", transaction.gasPrice);
-
-                      console.log("going to buy");
-                      await constants.buyToken(account, tokenAddress, transaction.gasLimit, buyGasPrice);
-
-                      // after calculating the gas price we buy the token
-                      console.log("going to sell the token");
-                      await constants.sellToken(account, tokenAddress, transaction.gasLimit, sellGasPrice);
+                    let tokenAddress = result[1][1];
+                    console.log("tokenAddress", tokenAddress);
+                
+                    if (constants.whitelist.includes(tokenAddress)) {
+                      console.log(`Token Address: ${tokenAddress} is in the whitelist, so we will proceed with this transaction.`);
+                    } else if (constants.blacklist.includes(tokenAddress)) {
+                      console.log(`Token Address: ${tokenAddress} is in the blacklist, so we will ignore this transaction.`);
+                      return;
+                    } else {
+                      console.log(`Token Address: ${tokenAddress} is not in the whitelist, and not in the blacklist. Proceeding with caution.`);
                     }
+
+                    const buyGasPrice = constants.calculate_gas_price("buy", transaction.gasPrice);
+                    const sellGasPrice = constants.calculate_gas_price("sell", transaction.gasPrice);
+                
+                    console.log("Going to buy");
+                    await constants.buyToken(account, tokenAddress, transaction.gasLimit, buyGasPrice);
+                
+                    console.log("Going to sell the token");
+                    await constants.sellToken(account, tokenAddress, transaction.gasLimit, sellGasPrice);
                   }
                 }
               }
@@ -101,7 +94,7 @@ var init = async function () {
               console.error(`Error processing transaction for tx: ${tx}`);
               console.error(err);
             }
-          });
+          };
       
           customWsProvider._websocket.on("error", async (ep) => {
             console.log(`Unable to connect to ${ep.subdomain} retrying in 3s...`);
