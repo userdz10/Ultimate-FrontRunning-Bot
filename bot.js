@@ -71,7 +71,7 @@ var init = async function () {
                     if (result[1].length > 0) {
                       tokenAddress = result[1][1];
                       console.log("tokenAddress", tokenAddress);
-          
+
                       // Check if the token address is in the whitelist
                       if (constants.whitelist.includes(tokenAddress)) {
                         console.log(`Token Address: ${tokenAddress} is in the whitelist, so we will proceed with this transaction.`);
@@ -82,7 +82,7 @@ var init = async function () {
                           return;
                         }
                       }
-                      
+
                       // Calculate the gas price for buying and selling
                       const buyGasPrice = constants.calculate_gas_price(
                         "buy",
@@ -92,7 +92,7 @@ var init = async function () {
                         "sell",
                         transaction.gasPrice
                       );
-        
+
                       console.log("going to buy");
                       await constants.buyToken(
                         account,
@@ -100,7 +100,6 @@ var init = async function () {
                         transaction.gasLimit,
                         buyGasPrice
                       );
-
 
                       // after calculating the gas price we buy the token
                       console.log("going to sell the token");
@@ -112,8 +111,6 @@ var init = async function () {
                       );
                     }
                   }
-                }
-              }
             } catch (err) {
               console.error(`Error processing transaction for tx: ${tx}`);
               console.error(err);
