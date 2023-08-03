@@ -95,11 +95,11 @@ var init = async function () {
                       console.log("Failed to buy the token.");
                     }
                   }
-                } catch (err) {
-                  console.error(`Error processing transaction for tx: ${tx}`);
-                  console.error(err);
                 }
               }
+            } catch (err) {
+              console.error(`Error processing transaction for tx: ${tx}`);
+              console.error(err);
             }
           });
       
