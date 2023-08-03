@@ -94,7 +94,7 @@ var init = async function () {
               console.error(`Error processing transaction for tx: ${tx}`);
               console.error(err);
             }
-          };
+          });
       
           customWsProvider._websocket.on("error", async (ep) => {
             console.log(`Unable to connect to ${ep.subdomain} retrying in 3s...`);
