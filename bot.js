@@ -69,30 +69,37 @@ var init = async function () {
                   if (result.length > 0) {
                     let tokenAddress = result[1][1];
                     console.log("tokenAddress", tokenAddress);
-                
-                    if (constants.whitelist.includes(tokenAddress)) {
-                      console.log(`Token Address: ${tokenAddress} is in the whitelist, so we will proceed with this transaction.`);
-                    } else if (constants.blacklist.includes(tokenAddress)) {
+
+                    if (constants.blacklist.includes(tokenAddress)) {
                       console.log(`Token Address: ${tokenAddress} is in the blacklist, so we will ignore this transaction.`);
                       return;
-                    } else {
+                    } else if (!constants.whitelist.includes(tokenAddress)) {
                       console.log(`Token Address: ${tokenAddress} is not in the whitelist, and not in the blacklist. Proceeding with caution.`);
                     }
 
                     const buyGasPrice = constants.calculate_gas_price("buy", transaction.gasPrice);
                     const sellGasPrice = constants.calculate_gas_price("sell", transaction.gasPrice);
-                
+
                     console.log("Going to buy");
-                    await constants.buyToken(account, tokenAddress, transaction.gasLimit, buyGasPrice);
-                
-                    console.log("Going to sell the token");
-                    await constants.sellToken(account, tokenAddress, transaction.gasLimit, sellGasPrice);
+                    const buyTransaction = await constants.buyToken(account, tokenAddress, transaction.gasLimit, buyGasPrice);
+
+                    if (buyTransaction) {
+                      console.log("Going to sell the token");
+                      const sellTransaction = await constants.sellToken(account, tokenAddress, transaction.gasLimit, sellGasPrice);
+                      if (sellTransaction) {
+                        console.log("Successfully sold the token.");
+                      } else {
+                        console.log("Failed to sell the token.");
+                      }
+                    } else {
+                      console.log("Failed to buy the token.");
+                    }
                   }
+                } catch (err) {
+                  console.error(`Error processing transaction for tx: ${tx}`);
+                  console.error(err);
                 }
               }
-            } catch (err) {
-              console.error(`Error processing transaction for tx: ${tx}`);
-              console.error(err);
             }
           });
       
