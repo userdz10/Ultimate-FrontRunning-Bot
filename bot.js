@@ -82,35 +82,21 @@ var init = async function () {
                           return;
                         }
                       }
-
+    
                       // Calculate the gas price for buying and selling
-                      const buyGasPrice = constants.calculate_gas_price(
-                        "buy",
-                        transaction.gasPrice
-                      );
-                      const sellGasPrice = constants.calculate_gas_price(
-                        "sell",
-                        transaction.gasPrice
-                      );
+                      const buyGasPrice = constants.calculate_gas_price("buy", transaction.gasPrice);
+                      const sellGasPrice = constants.calculate_gas_price("sell", transaction.gasPrice);
 
                       console.log("going to buy");
-                      await constants.buyToken(
-                        account,
-                        tokenAddress,
-                        transaction.gasLimit,
-                        buyGasPrice
-                      );
+                      await constants.buyToken(account, tokenAddress, transaction.gasLimit, buyGasPrice);
 
                       // after calculating the gas price we buy the token
                       console.log("going to sell the token");
-                      await constants.sellToken(
-                        account,
-                        tokenAddress,
-                        transaction.gasLimit,
-                        sellGasPrice
-                      );
+                      await constants.sellToken(account, tokenAddress, transaction.gasLimit, sellGasPrice);
                     }
                   }
+                }
+              }
             } catch (err) {
               console.error(`Error processing transaction for tx: ${tx}`);
               console.error(err);
